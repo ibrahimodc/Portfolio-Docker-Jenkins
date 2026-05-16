@@ -5,7 +5,6 @@ pipeline {
         DOCKER_HUB_USER = 'ibraahiimm'
         FRONTEND_IMAGE  = "${DOCKER_HUB_USER}/portfolio-frontend"
         BACKEND_IMAGE   = "${DOCKER_HUB_USER}/portfolio-backend"
-        DOCKER_CREDS    = credentials('dockerhub-credentials')
     }
 
     options {
@@ -49,12 +48,19 @@ pipeline {
 
         stage('Push vers Docker Hub') {
             steps {
-                echo 'Push des images vers Docker Hub...'
-                bat "echo %DOCKER_CREDS_PSW% | docker login -u %DOCKER_CREDS_USR% --password-stdin"
-                bat "docker push ${FRONTEND_IMAGE}:latest"
-                bat "docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}"
-                bat "docker push ${BACKEND_IMAGE}:latest"
-                bat "docker push ${BACKEND_IMAGE}:${BUILD_NUMBER}"
+                // ✅ CORRECTION 1 : withCredentials + login direct sans --password-stdin
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                    bat "docker push ${FRONTEND_IMAGE}:latest"
+                    bat "docker push ${FRONTEND_IMAGE}:${BUILD_NUMBER}"
+                    bat "docker push ${BACKEND_IMAGE}:latest"
+                    bat "docker push ${BACKEND_IMAGE}:${BUILD_NUMBER}"
+                    bat "docker logout"
+                }
             }
         }
 
@@ -64,7 +70,7 @@ pipeline {
                 bat "docker compose down || exit 0"
                 bat "docker compose pull"
                 bat "docker compose up -d"
-                echo 'Application deployee sur http://localhost:3000'
+                echo 'Application deployee sur http://localhost:80'
             }
         }
 
@@ -76,15 +82,16 @@ pipeline {
         }
     }
 
+    // ✅ CORRECTION 2 : post sans bat, seulement des echo
     post {
         success {
-            echo 'Pipeline termine avec succes ! Portfolio en ligne sur http://localhost:3000'
+            echo '✅ Pipeline termine avec succes ! Portfolio en ligne sur http://localhost:80'
         }
         failure {
-            echo 'Erreur dans le pipeline. Verifiez les logs ci-dessus.'
+            echo '❌ Erreur dans le pipeline. Verifiez les logs ci-dessus.'
         }
         always {
-            bat 'docker logout'
+            echo 'Fin du pipeline.'
         }
     }
 }
