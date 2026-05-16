@@ -1,4 +1,4 @@
-version: "3.9"
+#version: "3.9"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  Portfolio — 3 services séparés pour Docker Hub
@@ -20,7 +20,7 @@ services:
   # ── 1. Base de données MongoDB ─────────────────────────────────────────────
   mongo:
     image: mongo:7
-    container_name: portfolio-mongo
+    #container_name: portfolio-mongo
     restart: unless-stopped
     ports:
       - "27017:27017"
