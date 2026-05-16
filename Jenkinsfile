@@ -76,7 +76,7 @@ pipeline {
 
         stage('Health Check') {
             steps {
-                bat 'ping -n 16 > nul'
+                bat 'ping localhost -n 16 > nul'
                 bat 'docker ps'
             }
         }
