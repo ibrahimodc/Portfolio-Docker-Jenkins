@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "humao.rest-client",
+    "mongodb.mongodb-vscode",
+    "christian-kohler.npm-intellisense",
+    "PKief.material-icon-theme",
+    "dsznajder.es7-react-js-snippets"
+  ]
+}

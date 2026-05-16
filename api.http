@@ -1,0 +1,62 @@
+### ============================================================
+###  Portfolio API — Tests REST (extension REST Client requis)
+###  Cliquer sur "Send Request" au-dessus de chaque bloc
+### ============================================================
+
+@base = http://localhost:3001/api
+@id   = REMPLACER_PAR_UN_VRAI_ID_MONGODB
+
+# ── Santé ──────────────────────────────────────────────────────
+### GET Accueil
+GET http://localhost:3001/
+
+###
+
+# ── Récupérer tous les projets ────────────────────────────────
+### GET Tous les projets
+GET {{base}}/projets
+Accept: application/json
+
+###
+
+# ── Récupérer un projet ───────────────────────────────────────
+### GET Un projet par ID
+GET {{base}}/projets/{{id}}
+Accept: application/json
+
+###
+
+# ── Ajouter un projet ─────────────────────────────────────────
+### POST Ajouter
+POST {{base}}/projets
+Content-Type: application/json
+
+{
+  "libelle": "Application E-commerce",
+  "image": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=80",
+  "description": "Plateforme de vente en ligne complète avec panier, paiement Stripe et gestion des commandes en temps réel.",
+  "technologies": ["React", "Node.js", "MongoDB", "Stripe"],
+  "lien": "https://github.com/example/ecommerce",
+  "dateCreation": "2024-01-15"
+}
+
+###
+
+# ── Modifier un projet ────────────────────────────────────────
+### PUT Modifier
+PUT {{base}}/projets/{{id}}
+Content-Type: application/json
+
+{
+  "libelle": "E-commerce V2",
+  "technologies": ["React", "Node.js", "MongoDB", "Stripe", "Redis"],
+  "description": "Version améliorée avec cache Redis."
+}
+
+###
+
+# ── Supprimer un projet ───────────────────────────────────────
+### DELETE Supprimer
+DELETE {{base}}/projets/{{id}}
+
+###

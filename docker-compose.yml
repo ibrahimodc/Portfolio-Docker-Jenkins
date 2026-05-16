@@ -1,0 +1,77 @@
+version: "3.9"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Portfolio — 3 services séparés pour Docker Hub
+#
+#  Déploiement :
+#    docker compose up --build -d
+#
+#  Push vers Docker Hub :
+#    docker compose push
+#
+#  Variables d'environnement à surcharger en production :
+#    DOCKER_HUB_USER   — votre identifiant Docker Hub
+#    MONGO_URI         — URI de connexion MongoDB
+#    FRONTEND_URL      — URL publique du frontend (ex: https://monsite.com)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ── 1. Base de données MongoDB ─────────────────────────────────────────────
+  mongo:
+    image: mongo:7
+    container_name: portfolio-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: portfolio_db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # ── 2. Backend API (Express.js) ────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: ibraahiimm/portfolio-backend:latest
+    container_name: portfolio-backend
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      MONGO_URI: mongodb://mongo:27017/portfolio_db
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # ── 3. Frontend (React + Vite → Nginx) ────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ibraahiimm/portfolio-frontend:latest
+    container_name: portfolio-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+# ── Volumes persistants ────────────────────────────────────────────────────
+volumes:
+  mongo_data:
+    driver: local
+  uploads_data:
+    driver: local

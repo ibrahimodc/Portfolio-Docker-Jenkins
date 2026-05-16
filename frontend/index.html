@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ibrahima Diallo — Cloud & DevSecOps Engineer · Portfolio" />
+  <title>Ibrahima Diallo · Cloud & DevSecOps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+
+    :root {
+      --bg-deep:       #f8fafc;
+      --bg-card:       #ffffff;
+      --bg-elevated:   #e2e8f0;
+      --bg-input:      #f1f5f9;
+      --border:        rgba(3,105,161,0.14);
+      --border-focus:  rgba(3,105,161,0.55);
+      --accent:        #0369a1;
+      --accent-light:  #0284c7;
+      --accent-dim:    rgba(3,105,161,0.10);
+      --accent2-light: #38bdf8;
+      --danger:        #dc2626;
+      --danger-dim:    rgba(220,38,38,0.08);
+      --success:       #059669;
+      --success-dim:   rgba(5,150,105,0.08);
+      --text-primary:   #0f172a;
+      --text-secondary: #475569;
+      --text-muted:     #94a3b8;
+      --radius-sm:  6px;  --radius-md: 12px;
+      --radius-lg: 18px;  --radius-xl: 24px;
+      --shadow-card:  0 2px 16px rgba(15,23,42,0.08),0 0 0 1px rgba(3,105,161,0.07);
+      --shadow-hover: 0 8px 32px rgba(3,105,161,0.16);
+      --font-titre: 'Plus Jakarta Sans', sans-serif;
+      --font-corps: 'Inter', sans-serif;
+      --tr: 0.22s ease;
+      --header-bg: rgba(248,250,252,0.92);
+    }
+
+    [data-theme="dark"] {
+      --bg-deep:       #0f172a;
+      --bg-card:       #1e293b;
+      --bg-elevated:   #334155;
+      --bg-input:      #1e293b;
+      --border:        rgba(148,163,184,0.12);
+      --border-focus:  rgba(56,189,248,0.55);
+      --accent:        #38bdf8;
+      --accent-light:  #7dd3fc;
+      --accent-dim:    rgba(56,189,248,0.12);
+      --accent2-light: #bae6fd;
+      --danger:        #f87171;
+      --danger-dim:    rgba(248,113,113,0.10);
+      --success:       #34d399;
+      --success-dim:   rgba(52,211,153,0.10);
+      --text-primary:   #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted:     #64748b;
+      --shadow-card:  0 2px 16px rgba(0,0,0,0.4),0 0 0 1px rgba(56,189,248,0.07);
+      --shadow-hover: 0 8px 32px rgba(56,189,248,0.18);
+      --header-bg: rgba(15,23,42,0.92);
+    }
+
+    body {
+      font-family: var(--font-corps);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--tr), color var(--tr);
+    }
+
+    /* ── Layout ───────────────────────────────────────────────────── */
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ── Header ───────────────────────────────────────────────────── */
+    .app-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--tr), border-color var(--tr);
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-info { display: flex; flex-direction: column; line-height: 1.15; }
+    .logo-text { font-family: var(--font-titre); font-size: 1.1rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.02em; }
+    .logo-sub  { font-size: 0.68rem; font-weight: 500; color: var(--accent-light); letter-spacing: 0.07em; text-transform: uppercase; }
+
+    .header-nav { display: flex; gap: 0.4rem; align-items: center; }
+    .nav-link {
+      font-size: 0.95rem; color: var(--text-primary); text-decoration: none;
+      padding: 6px 12px; border-radius: var(--radius-sm);
+      transition: background var(--tr), color var(--tr); cursor: pointer; border: none; background: none; font-family: var(--font-corps);
+    }
+    .nav-link:hover, .nav-link.active { background: var(--accent-dim); color: var(--accent-light); }
+
+    .btn-theme {
+      display: flex; align-items: center; justify-content: center;
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-elevated);
+      cursor: pointer; font-size: 1.1rem; flex-shrink: 0;
+      transition: background var(--tr), border-color var(--tr), transform 0.18s ease;
+    }
+    .btn-theme:hover { background: var(--accent-dim); border-color: var(--accent-light); transform: rotate(20deg) scale(1.1); }
+
+    /* ── Main ─────────────────────────────────────────────────────── */
+    .app-main { flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2rem 1rem 4rem; }
+
+    /* ── Sections (SPA) ───────────────────────────────────────────── */
+    .section-page { display: none; }
+    .section-page.active { display: block; }
+
+    /* ── Hero ─────────────────────────────────────────────────────── */
+    .accueil { display: flex; flex-direction: column; gap: 0; }
+
+    .hero {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden; padding: 0;
+      margin: -2rem -1rem 4rem;
+    }
+    .hero-inner {
+      display: grid; grid-template-columns: 40fr 60fr;
+      gap: 0; min-height: calc(100vh - 64px);
+    }
+    .hero-text-side {
+      padding: 4rem 3.5rem;
+      display: flex; flex-direction: column; justify-content: center; gap: 1.4rem;
+    }
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-dim); color: var(--accent);
+      font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 6px 14px;
+      border-radius: 99px; border: 1px solid rgba(3,105,161,0.18); width: fit-content;
+    }
+    .hero-titre {
+      font-family: var(--font-titre);
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+      color: var(--text-primary); letter-spacing: -0.04em; line-height: 1.1;
+    }
+    .hero-titre-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent2-light));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sous-titre { font-size: 1rem; color: var(--text-secondary); line-height: 1.65; max-width: 480px; }
+    .hero-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .hero-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-top: 0.5rem; }
+    .hero-tool-badge {
+      font-size: 0.72rem; font-weight: 600; padding: 3px 10px;
+      border-radius: 99px; background: var(--bg-elevated);
+      border: 1px solid var(--border); color: var(--text-muted);
+    }
+    .hero-image-side {
+      border-left: 1px solid var(--border); position: relative; overflow: hidden; display: flex;
+    }
+    .hero-avatar-container { position: relative; width: 100%; height: 100%; min-height: calc(100vh - 64px); }
+    .hero-avatar-glow {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: linear-gradient(to right, var(--bg-card) 0%, transparent 28%),
+                  linear-gradient(to bottom, rgba(0,0,0,0.10) 0%, transparent 30%);
+    }
+    [data-theme="dark"] .hero-avatar-glow {
+      background: linear-gradient(to right, var(--bg-card) 0%, transparent 28%),
+                  linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, transparent 35%);
+    }
+    .hero-avatar-img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center 8%;
+      display: block; position: relative; z-index: 0;
+      filter: contrast(1.06) brightness(1.02) saturate(1.12);
+      transform: scale(1.01);
+    }
+    .hero-avatar-badge {
+      position: absolute; z-index: 3;
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.88); border: 1px solid rgba(3,105,161,0.18);
+      border-radius: 99px; padding: 8px 16px; font-size: 0.82rem; font-weight: 600;
+      color: #0f172a; white-space: nowrap; backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    }
+    [data-theme="dark"] .hero-avatar-badge { background: rgba(15,23,42,0.82); color: var(--text-primary); border-color: rgba(56,189,248,0.2); }
+    .hero-avatar-badge--top    { top: 2rem; left: 2rem; }
+    .hero-avatar-badge--bottom { bottom: 2rem; right: 2rem; }
+
+    /* ── Présentation ─────────────────────────────────────────────── */
+    .presentation { max-width: 800px; margin: 0 auto; text-align: center; padding: 2rem 1rem; }
+    .section-titre { font-family: var(--font-titre); font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+    .section-sous-titre { font-size: 1rem; color: var(--text-secondary); max-width: 620px; margin: 0 auto 2.5rem; line-height: 1.65; }
+    .competences { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1.5rem; }
+    .competence {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      box-shadow: var(--shadow-card); transition: transform var(--tr), box-shadow var(--tr);
+    }
+    .competence:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .competence-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .competence h3 { font-family: var(--font-titre); font-size: 1.05rem; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; }
+    .competence p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+
+    /* ── Boutons ──────────────────────────────────────────────────── */
+    .btn {
+      font-family: var(--font-corps); font-size: 0.95rem; font-weight: 600;
+      padding: 10px 20px; border-radius: var(--radius-md); border: none;
+      cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; justify-content: center; gap: 6px;
+      transition: all var(--tr); white-space: nowrap;
+    }
+    .btn-principal { background: var(--accent); color: #fff; }
+    .btn-principal:hover { background: var(--accent-light); transform: translateY(-2px); }
+    .btn-secondaire { background: var(--bg-elevated); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-secondaire:hover { border-color: var(--accent-light); }
+    .btn-danger { background: var(--danger-dim); color: var(--danger); border: 1px solid rgba(220,38,38,0.2); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-sm { font-size: 0.82rem; padding: 6px 14px; border-radius: var(--radius-sm); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── Projets ──────────────────────────────────────────────────── */
+    .projets-page { display: flex; flex-direction: column; gap: 2rem; }
+    .projets-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .projets-titre { font-family: var(--font-titre); font-size: 2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.03em; }
+    .projets-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.5rem; }
+
+    .projet-carte {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); overflow: hidden;
+      display: flex; flex-direction: column;
+      box-shadow: var(--shadow-card); transition: transform var(--tr), box-shadow var(--tr);
+    }
+    .projet-carte:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .projet-image-wrapper { position: relative; height: 180px; overflow: hidden; background: var(--bg-elevated); }
+    .projet-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .projet-carte:hover .projet-image { transform: scale(1.04); }
+    .projet-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 3rem; background: linear-gradient(135deg, var(--accent-dim), var(--bg-elevated)); }
+    .projet-corps { flex: 1; padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 8px; }
+    .projet-libelle { font-family: var(--font-titre); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+    .projet-description { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.55; flex: 1; }
+    .projet-techs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tech-badge { font-size: 0.75rem; font-weight: 500; padding: 3px 9px; border-radius: 20px; background: var(--accent-dim); color: var(--accent-light); border: 1px solid rgba(3,105,161,0.15); }
+    .projet-actions { display: flex; gap: 8px; padding: 1rem 1.5rem; border-top: 1px solid var(--border); }
+
+    /* Formulaire ajout/édition projet */
+    .projet-form-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500; padding: 1rem; backdrop-filter: blur(4px);
+    }
+    .projet-form-overlay.hidden { display: none; }
+    .projet-form-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 2rem;
+      width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+    }
+    .form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .form-titre { font-family: var(--font-titre); font-size: 1.3rem; font-weight: 700; color: var(--text-primary); }
+    .form-corps { display: flex; flex-direction: column; gap: 1rem; }
+    .champ-groupe { display: flex; flex-direction: column; gap: 5px; }
+    .champ-label { font-size: 0.88rem; font-weight: 500; color: var(--text-secondary); }
+    .champ-requis { color: var(--accent); }
+    .champ-input {
+      background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text-primary);
+      font-family: var(--font-corps); font-size: 0.92rem;
+      padding: 10px 14px; outline: none; width: 100%;
+      transition: border-color var(--tr), box-shadow var(--tr);
+    }
+    .champ-input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(3,105,161,0.10); }
+    .champ-textarea { resize: vertical; min-height: 80px; }
+    .erreur-msg { font-size: 0.8rem; color: var(--danger); }
+    .form-footer { display: flex; gap: 0.75rem; justify-content: flex-end; padding-top: 0.5rem; }
+
+    /* Spinner */
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 3rem auto; display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .etat-vide { text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-size: 1rem; }
+
+    /* ── À propos ─────────────────────────────────────────────────── */
+    .apropos-page { display: flex; flex-direction: column; gap: 3rem; }
+    .apropos-hero {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 3rem;
+      box-shadow: var(--shadow-card);
+    }
+    .apropos-content { display: flex; gap: 3rem; align-items: flex-start; }
+    .apropos-avatar-ring {
+      width: 200px; height: 200px; border-radius: 50%; flex-shrink: 0;
+      padding: 3px; background: linear-gradient(135deg, var(--accent), var(--accent2-light));
+      box-shadow: 0 0 32px rgba(56,189,248,0.25);
+    }
+    .apropos-avatar {
+      width: 100%; height: 100%; border-radius: 50%;
+      object-fit: cover; object-position: top center;
+      border: 3px solid var(--bg-card);
+      filter: contrast(1.06) brightness(1.02) saturate(1.1);
+    }
+    .apropos-text { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+    .apropos-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-dim); color: var(--accent);
+      font-size: 0.8rem; font-weight: 600; padding: 5px 12px;
+      border-radius: 99px; border: 1px solid rgba(3,105,161,0.18); width: fit-content;
+    }
+    .apropos-nom { font-family: var(--font-titre); font-size: 2.2rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.03em; }
+    .apropos-poste { font-size: 1rem; color: var(--accent); font-weight: 500; }
+    .apropos-bio { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; }
+
+    .competences-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.25rem; }
+    .competence-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      transition: transform var(--tr), box-shadow var(--tr);
+    }
+    .competence-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .competence-card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .competence-card-header h3 { font-family: var(--font-titre); font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+    .competence-icon-lg { font-size: 1.5rem; }
+    .competence-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .competence-tag { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 99px; background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(3,105,161,0.15); }
+
+    /* ── Contact ──────────────────────────────────────────────────── */
+    .contact-page { max-width: 680px; margin: 0 auto; }
+    .contact-entete { text-align: center; margin-bottom: 2.5rem; }
+    .contact-entete h1 { font-family: var(--font-titre); font-size: 2rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .contact-entete p { color: var(--text-secondary); }
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .champ-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .contact-submit {
+      width: 100%; justify-content: center; font-size: 1rem; font-weight: 600;
+      padding: 14px 24px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      color: #fff; border: none; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(3,105,161,0.25);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      font-family: var(--font-corps);
+    }
+    .contact-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(3,105,161,0.35); }
+    .contact-succes {
+      text-align: center; padding: 4rem 2rem;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); box-shadow: var(--shadow-card);
+    }
+    .succes-icone { width: 72px; height: 72px; border-radius: 50%; background: var(--success-dim); color: var(--success); font-size: 2rem; line-height: 72px; margin: 0 auto 1.5rem; }
+    .contact-illustration { display: flex; justify-content: center; margin-bottom: 2.5rem; }
+    .contact-illustration img { max-width: 460px; width: 100%; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-card); }
+
+    /* ── Footer ───────────────────────────────────────────────────── */
+    .app-footer { text-align: center; padding: 1.5rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.82rem; }
+
+    /* ── Notification toast ───────────────────────────────────────── */
+    .toast {
+      position: fixed; top: 80px; right: 24px; z-index: 9999;
+      padding: 12px 20px; border-radius: var(--radius-md);
+      font-size: 0.9rem; font-weight: 500;
+      animation: slideIn 0.25s ease; max-width: 340px;
+    }
+    .toast-succes { background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+    .toast-erreur { background: var(--danger-dim);  border: 1px solid var(--danger);  color: var(--danger); }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* ── Responsive ───────────────────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; min-height: auto; }
+      .hero-image-side { height: 55vw; border-left: none; border-top: 1px solid var(--border); }
+      .hero-avatar-container { min-height: 55vw; }
+      .hero-text-side { padding: 3rem 2rem 2rem; }
+    }
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1rem; height: 56px; }
+      .logo-sub { display: none; }
+      .header-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 1px solid var(--border); justify-content: space-around; padding: 0.4rem 0 0.4rem; z-index: 200; gap: 0; }
+      .nav-link { flex: 1; text-align: center; padding: 0.5rem 0.25rem; font-size: 0.72rem; border-radius: 0; }
+      .btn-theme { position: fixed; bottom: 56px; right: 1rem; z-index: 201; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+      .app-main { padding-bottom: 6rem; }
+    }
+    @media (max-width: 640px) {
+      .champ-row { grid-template-columns: 1fr; }
+      .apropos-content { flex-direction: column; align-items: center; text-align: center; }
+      .apropos-avatar-ring { width: 160px; height: 160px; }
+    }
+    @media (max-width: 480px) {
+      .hero-text-side { padding: 2rem 1.5rem; }
+      .hero-titre { font-size: 1.8rem; }
+      .hero-image-side { height: 70vw; }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a class="logo" onclick="navigate('accueil')" style="cursor:pointer">
+        <svg width="38" height="38" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 3 L33 9 L33 20 C33 27 26 32 18 34 C10 32 3 27 3 20 L3 9 Z" fill="#e0f2fe" stroke="#0369a1" stroke-width="1.5"/>
+          <path d="M18 3 L33 9 L33 20 C33 27 26 32 18 34 C10 32 3 27 3 20 L3 9 Z" fill="none" stroke="#0284c7" stroke-width="0.5" opacity="0.5"/>
+          <text x="18" y="22" text-anchor="middle" font-size="13" font-weight="500" fill="#0f172a" font-family="system-ui,sans-serif">ID</text>
+        </svg>
+        <div class="logo-info">
+          <span class="logo-text">Ibrahima Diallo</span>
+          <span class="logo-sub">Cloud · DevSecOps</span>
+        </div>
+      </a>
+      <nav class="header-nav">
+        <button class="nav-link active" onclick="navigate('accueil')"  id="nav-accueil">Accueil</button>
+        <button class="nav-link"        onclick="navigate('projets')"  id="nav-projets">Projets</button>
+        <button class="nav-link"        onclick="navigate('apropos')"  id="nav-apropos">À propos</button>
+        <button class="nav-link"        onclick="navigate('contact')"  id="nav-contact">Contact</button>
+        <button class="btn-theme" id="btnTheme" title="Changer le thème" aria-label="Changer le thème">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────────────────── -->
+  <main class="app-main">
+
+    <!-- ACCUEIL -->
+    <div id="page-accueil" class="section-page active">
+      <div class="accueil">
+        <section class="hero">
+          <div class="hero-inner">
+            <div class="hero-text-side">
+              <div class="hero-label">☁️ Cloud &amp; DevSecOps Engineer</div>
+              <h1 class="hero-titre">
+                Infrastructure sécurisée,<br>
+                <span class="hero-titre-accent">déployée dans le Cloud</span>
+              </h1>
+              <p class="hero-sous-titre">
+                Bienvenue sur mon portfolio. Je suis <strong>Ibrahima Diallo</strong>, apprenant à Orange Digital Center (ODC SENEGAL) en vue d'être un ingénieur spécialisé en Cloud Computing et DevSecOps. Je conçois des infrastructures automatisées, résilientes et sécurisées — du code à la production.
+              </p>
+              <div class="hero-actions">
+                <button class="btn btn-principal" onclick="navigate('projets')">Voir mes projets</button>
+                <button class="btn btn-secondaire" onclick="navigate('apropos')">En savoir plus</button>
+              </div>
+              <div class="hero-tools">
+                <span class="hero-tool-badge">AWS</span>
+                <span class="hero-tool-badge">Kubernetes</span>
+                <span class="hero-tool-badge">Docker</span>
+                <span class="hero-tool-badge">Terraform</span>
+                <span class="hero-tool-badge">Ansible</span>
+                <span class="hero-tool-badge">GitLab CI</span>
+                <span class="hero-tool-badge">Vault</span>
+                <span class="hero-tool-badge">Prometheus</span>
+                <span class="hero-tool-badge">Grafana</span>
+                <span class="hero-tool-badge">Trivy</span>
+                <span class="hero-tool-badge">SonarQube</span>
+                <span class="hero-tool-badge">Linux</span>
+              </div>
+            </div>
+            <div class="hero-image-side">
+              <div class="hero-avatar-container">
+                <div class="hero-avatar-glow"></div>
+                <img
+                  src="assets/Moi.jpg"
+                  alt="Ibrahima Diallo"
+                  class="hero-avatar-img"
+                  onerror="this.onerror=null;this.style.background='#1e3a5f'"
+                />
+                <div class="hero-avatar-badge hero-avatar-badge--top">🔐 Security First</div>
+                <div class="hero-avatar-badge hero-avatar-badge--bottom">⚡ CI/CD Expert</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="presentation">
+          <h2 class="section-titre">Ce que je compte faire</h2>
+          <p class="section-sous-titre">Mon expertise couvre l'ensemble du cycle de vie de l'infrastructure cloud moderne, avec un accent fort sur la sécurité intégrée dès la conception.</p>
+          <div class="competences">
+            <div class="competence">
+              <div class="competence-icon">☁️</div>
+              <h3>Cloud Architecture</h3>
+              <p>Conception et déploiement d'infrastructures multi-cloud sur AWS, Azure et GCP avec Terraform et Kubernetes.</p>
+            </div>
+            <div class="competence">
+              <div class="competence-icon">🔄</div>
+              <h3>CI/CD &amp; Automatisation</h3>
+              <p>Pipelines DevOps end-to-end avec GitLab CI, GitHub Actions, Jenkins. Infrastructure as Code avec Ansible.</p>
+            </div>
+            <div class="competence">
+              <div class="competence-icon">🛡️</div>
+              <h3>DevSecOps</h3>
+              <p>Intégration native de la sécurité — SAST, DAST, scanning de conteneurs, gestion des secrets avec Vault.</p>
+            </div>
+            <div class="competence">
+              <div class="competence-icon">📊</div>
+              <h3>Monitoring &amp; Observabilité</h3>
+              <p>Stack Prometheus/Grafana, ELK, alerting proactif et dashboards de performance en temps réel.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- PROJETS -->
+    <div id="page-projets" class="section-page">
+      <div class="projets-page">
+        <div class="projets-header">
+          <h1 class="projets-titre">Mes Projets</h1>
+          <button class="btn btn-principal" onclick="ouvrirFormulaire()">+ Ajouter un projet</button>
+        </div>
+        <div id="projets-grille" class="projets-grille">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- À PROPOS -->
+    <div id="page-apropos" class="section-page">
+      <div class="apropos-page">
+        <div class="apropos-hero">
+          <div class="apropos-content">
+            <div class="apropos-avatar-ring">
+              <img
+                src="assets/Moi.jpg"
+                alt="Ibrahima Diallo"
+                class="apropos-avatar"
+                onerror="this.onerror=null;this.style.background='#1e3a5f'"
+              />
+            </div>
+            <div class="apropos-text">
+              <div class="apropos-badge">☁️ En formation Cloud & DevSecOps</div>
+              <h1 class="apropos-nom">Ibrahima Diallo</h1>
+              <p class="apropos-poste">Aspirant Cloud &amp; DevSecOps Engineer · ODC Sénégal</p>
+              <p class="apropos-bio">
+                Passionné par l'automatisation et la sécurisation des infrastructures, je me forme intensivement à Orange Digital Center (Dakar) pour devenir ingénieur Cloud et DevSecOps. Je construis des pipelines CI/CD, des infrastructures as-code et des systèmes de monitoring robustes.
+              </p>
+              <div style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.5rem;">
+                <button class="btn btn-principal btn-sm" onclick="navigate('projets')">Voir mes projets</button>
+                <button class="btn btn-secondaire btn-sm" onclick="navigate('contact')">Me contacter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="section-titre" style="margin-bottom:1.5rem">Compétences techniques</h2>
+          <div class="competences-grid">
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">☁️</span><h3>Cloud Providers</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">AWS</span><span class="competence-tag">Azure</span><span class="competence-tag">GCP</span>
+              </div>
+            </div>
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">📦</span><h3>Conteneurs &amp; Orchestration</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">Docker</span><span class="competence-tag">Kubernetes</span><span class="competence-tag">Helm</span>
+              </div>
+            </div>
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">🔧</span><h3>Infrastructure as Code</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">Terraform</span><span class="competence-tag">Ansible</span><span class="competence-tag">Pulumi</span>
+              </div>
+            </div>
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">🔄</span><h3>CI/CD</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">GitLab CI</span><span class="competence-tag">GitHub Actions</span><span class="competence-tag">Jenkins</span>
+              </div>
+            </div>
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">🛡️</span><h3>Sécurité</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">Trivy</span><span class="competence-tag">Vault</span><span class="competence-tag">SonarQube</span>
+              </div>
+            </div>
+            <div class="competence-card">
+              <div class="competence-card-header"><span class="competence-icon-lg">📊</span><h3>Monitoring</h3></div>
+              <div class="competence-tags">
+                <span class="competence-tag">Prometheus</span><span class="competence-tag">Grafana</span><span class="competence-tag">ELK</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div id="page-contact" class="section-page">
+      <div class="contact-page">
+        <div class="contact-entete">
+          <h1>Contactez-moi</h1>
+          <p>Une question, une opportunité ? Je suis disponible et vous répondrai rapidement.</p>
+        </div>
+        <div class="contact-illustration">
+          <img src="assets/formContact.png" alt="Contact" onerror="this.parentElement.style.display='none'" />
+        </div>
+        <div id="contact-succes" class="contact-succes" style="display:none">
+          <div class="succes-icone" style="line-height:72px;text-align:center">✓</div>
+          <h2 style="font-family:var(--font-titre);font-size:1.8rem;color:var(--text-primary);margin-bottom:.5rem">Message envoyé !</h2>
+          <p style="color:var(--text-secondary);margin-bottom:2rem">Merci pour votre message. Je vous répondrai dans les plus brefs délais.</p>
+          <button class="btn btn-principal" onclick="resetContact()">Envoyer un autre message</button>
+        </div>
+        <form id="contact-form" class="contact-form" onsubmit="envoyerContact(event)" novalidate>
+          <div class="champ-row">
+            <div class="champ-groupe">
+              <label class="champ-label" for="c-nom">Nom <span class="champ-requis">*</span></label>
+              <input id="c-nom" name="nom" type="text" class="champ-input" placeholder="Votre nom" />
+              <span class="erreur-msg" id="err-nom"></span>
+            </div>
+            <div class="champ-groupe">
+              <label class="champ-label" for="c-email">Email <span class="champ-requis">*</span></label>
+              <input id="c-email" name="email" type="email" class="champ-input" placeholder="votre@email.com" />
+              <span class="erreur-msg" id="err-email"></span>
+            </div>
+          </div>
+          <div class="champ-groupe">
+            <label class="champ-label" for="c-sujet">Sujet</label>
+            <input id="c-sujet" name="sujet" type="text" class="champ-input" placeholder="Sujet de votre message" />
+          </div>
+          <div class="champ-groupe">
+            <label class="champ-label" for="c-message">Message <span class="champ-requis">*</span></label>
+            <textarea id="c-message" name="message" rows="5" class="champ-input champ-textarea" placeholder="Votre message…"></textarea>
+            <span class="erreur-msg" id="err-message"></span>
+          </div>
+          <button type="submit" class="contact-submit">Envoyer le message</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer class="app-footer">
+    © 2026 Ibrahima Diallo · aspirant Cloud &amp; DevSecOps Engineer · Dakar, Sénégal
+  </footer>
+</div>
+
+<!-- ── Formulaire Projet (modal) ──────────────────────────────────────── -->
+<div id="projet-overlay" class="projet-form-overlay hidden">
+  <div class="projet-form-card">
+    <div class="form-header">
+      <h2 class="form-titre" id="form-modal-titre">Ajouter un projet</h2>
+      <button class="btn btn-secondaire btn-sm" onclick="fermerFormulaire()">✕</button>
+    </div>
+    <div class="form-corps">
+      <input type="hidden" id="f-id" />
+      <div class="champ-groupe">
+        <label class="champ-label">Libellé <span class="champ-requis">*</span></label>
+        <input id="f-libelle" class="champ-input" type="text" placeholder="Nom du projet" />
+        <span class="erreur-msg" id="err-f-libelle"></span>
+      </div>
+      <div class="champ-groupe">
+        <label class="champ-label">Description</label>
+        <textarea id="f-description" class="champ-input champ-textarea" placeholder="Décrivez le projet…"></textarea>
+      </div>
+      <div class="champ-groupe">
+        <label class="champ-label">Technologies <span style="font-weight:400;color:var(--text-muted)">(séparées par virgule)</span></label>
+        <input id="f-technologies" class="champ-input" type="text" placeholder="Docker, Kubernetes, Terraform" />
+      </div>
+      <div class="champ-groupe">
+        <label class="champ-label">Lien (URL)</label>
+        <input id="f-lien" class="champ-input" type="url" placeholder="https://github.com/…" />
+      </div>
+      <div class="champ-groupe">
+        <label class="champ-label">Image URL</label>
+        <input id="f-imageUrl" class="champ-input" type="url" placeholder="https://…/image.png" />
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn btn-secondaire" onclick="fermerFormulaire()">Annuler</button>
+      <button class="btn btn-principal" onclick="sauvegarderProjet()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Scripts ─────────────────────────────────────────────────────────── -->
+<script src="api.js"></script>
+<script>
+  // ── Thème ────────────────────────────────────────────────────────────────
+  const html    = document.documentElement;
+  const btnTheme = document.getElementById('btnTheme');
+  const theme   = localStorage.getItem('portfolio-theme') || 'light';
+  html.setAttribute('data-theme', theme);
+  btnTheme.textContent = theme === 'dark' ? '☀️' : '🌙';
+
+  btnTheme.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('portfolio-theme', next);
+    btnTheme.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+
+  // ── Navigation SPA ───────────────────────────────────────────────────────
+  function navigate(page) {
+    document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    document.getElementById('nav-'  + page).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (page === 'projets') chargerProjets();
+  }
+
+  // ── Toast ────────────────────────────────────────────────────────────────
+  function toast(msg, type = 'succes') {
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  // ── Projets ──────────────────────────────────────────────────────────────
+  let projetsData = [];
+  let editId      = null;
+
+  async function chargerProjets() {
+    const grille = document.getElementById('projets-grille');
+    grille.innerHTML = '<div class="spinner"></div>';
+    try {
+      projetsData = await getProjets();
+      afficherProjets();
+    } catch (e) {
+      grille.innerHTML = `<p class="etat-vide">❌ Impossible de charger les projets.<br><small>${e.message}</small></p>`;
+    }
+  }
+
+  function afficherProjets() {
+    const grille = document.getElementById('projets-grille');
+    if (!projetsData.length) {
+      grille.innerHTML = '<p class="etat-vide">Aucun projet pour l\'instant. Ajoutez-en un !</p>';
+      return;
+    }
+    grille.innerHTML = projetsData.map(p => `
+      <div class="projet-carte">
+        <div class="projet-image-wrapper">
+          ${p.imageUrl
+            ? `<img class="projet-image" src="${p.imageUrl}" alt="${p.libelle}" onerror="this.parentElement.innerHTML='<div class=projet-placeholder>🖥️</div>'" />`
+            : '<div class="projet-placeholder">🖥️</div>'}
+        </div>
+        <div class="projet-corps">
+          <div class="projet-libelle">${p.libelle}</div>
+          <p class="projet-description">${p.description || '<em style="color:var(--text-muted)">Pas de description.</em>'}</p>
+          <div class="projet-techs">
+            ${(p.technologies || []).map(t => `<span class="tech-badge">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="projet-actions">
+          ${p.lien ? `<a class="btn btn-secondaire btn-sm" href="${p.lien}" target="_blank" rel="noopener">🔗 Lien</a>` : ''}
+          <button class="btn btn-secondaire btn-sm" onclick='editerProjet(${JSON.stringify(p)})'>✏️ Éditer</button>
+          <button class="btn btn-danger btn-sm"    onclick="supprimerProjet('${p._id}')">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function ouvrirFormulaire(projet = null) {
+    editId = projet ? projet._id : null;
+    document.getElementById('form-modal-titre').textContent = projet ? 'Modifier le projet' : 'Ajouter un projet';
+    document.getElementById('f-id').value          = projet?._id          || '';
+    document.getElementById('f-libelle').value     = projet?.libelle      || '';
+    document.getElementById('f-description').value = projet?.description  || '';
+    document.getElementById('f-technologies').value = (projet?.technologies || []).join(', ');
+    document.getElementById('f-lien').value        = projet?.lien         || '';
+    document.getElementById('f-imageUrl').value    = projet?.imageUrl     || '';
+    document.getElementById('err-f-libelle').textContent = '';
+    document.getElementById('projet-overlay').classList.remove('hidden');
+  }
+
+  function fermerFormulaire() {
+    document.getElementById('projet-overlay').classList.add('hidden');
+    editId = null;
+  }
+
+  function editerProjet(p) { ouvrirFormulaire(p); }
+
+  async function sauvegarderProjet() {
+    const libelle = document.getElementById('f-libelle').value.trim();
+    if (!libelle) { document.getElementById('err-f-libelle').textContent = 'Le libellé est obligatoire.'; return; }
+
+    const data = {
+      libelle,
+      description  : document.getElementById('f-description').value.trim(),
+      technologies : document.getElementById('f-technologies').value.split(',').map(t => t.trim()).filter(Boolean),
+      lien         : document.getElementById('f-lien').value.trim(),
+      imageUrl     : document.getElementById('f-imageUrl').value.trim(),
+    };
+
+    try {
+      if (editId) {
+        await updateProjet(editId, data);
+        toast('Projet modifié avec succès !');
+      } else {
+        await addProjet(data);
+        toast('Projet ajouté avec succès !');
+      }
+      fermerFormulaire();
+      chargerProjets();
+    } catch (e) {
+      toast(e.message, 'erreur');
+    }
+  }
+
+  async function supprimerProjet(id) {
+    if (!confirm('Supprimer ce projet ?')) return;
+    try {
+      await deleteProjet(id);
+      toast('Projet supprimé.');
+      chargerProjets();
+    } catch (e) {
+      toast(e.message, 'erreur');
+    }
+  }
+
+  // ── Contact ───────────────────────────────────────────────────────────────
+  function envoyerContact(e) {
+    e.preventDefault();
+    const nom     = document.getElementById('c-nom').value.trim();
+    const email   = document.getElementById('c-email').value.trim();
+    const message = document.getElementById('c-message').value.trim();
+    let ok = true;
+
+    document.getElementById('err-nom').textContent     = '';
+    document.getElementById('err-email').textContent   = '';
+    document.getElementById('err-message').textContent = '';
+
+    if (!nom)                             { document.getElementById('err-nom').textContent     = 'Le nom est obligatoire.'; ok = false; }
+    if (!email)                           { document.getElementById('err-email').textContent   = "L'email est obligatoire."; ok = false; }
+    else if (!/\S+@\S+\.\S+/.test(email)) { document.getElementById('err-email').textContent   = 'Email invalide.'; ok = false; }
+    if (!message)                         { document.getElementById('err-message').textContent = 'Le message est obligatoire.'; ok = false; }
+
+    if (!ok) return;
+    document.getElementById('contact-form').style.display    = 'none';
+    document.getElementById('contact-succes').style.display  = 'block';
+  }
+
+  function resetContact() {
+    document.getElementById('contact-form').reset();
+    document.getElementById('contact-form').style.display   = '';
+    document.getElementById('contact-succes').style.display = 'none';
+  }
+
+  // Fermer le modal en cliquant en dehors
+  document.getElementById('projet-overlay').addEventListener('click', function(e) {
+    if (e.target === this) fermerFormulaire();
+  });
+</script>
+</body>
+</html>
