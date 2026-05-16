@@ -86,56 +86,37 @@ pipeline {
     post {
         success {
             echo '✅ Pipeline termine avec succes ! Portfolio en ligne sur http://localhost:80'
-            emailext (
-                to: "${EMAIL_DEST}",
-                subject: "✅ [Jenkins] Build #${BUILD_NUMBER} — SUCCÈS — ${JOB_NAME}",
-                body: """
-                    <html>
-                    <body style="font-family: Arial, sans-serif;">
-                        <h2 style="color: #28a745;">✅ Déploiement réussi !</h2>
-                        <table border="1" cellpadding="8" style="border-collapse: collapse;">
-                            <tr><td><b>Job</b></td><td>${JOB_NAME}</td></tr>
-                            <tr><td><b>Build</b></td><td>#${BUILD_NUMBER}</td></tr>
-                            <tr><td><b>Statut</b></td><td style="color:green;"><b>SUCCÈS</b></td></tr>
-                            <tr><td><b>Durée</b></td><td>${currentBuild.durationString}</td></tr>
-                            <tr><td><b>Portfolio</b></td><td><a href="http://localhost:80">http://localhost:80</a></td></tr>
-                            <tr><td><b>Logs Jenkins</b></td><td><a href="${BUILD_URL}">${BUILD_URL}</a></td></tr>
-                        </table>
-                        <br>
-                        <p>Images déployées :</p>
-                        <ul>
-                            <li>ibraahiimm/portfolio-frontend:${BUILD_NUMBER}</li>
-                            <li>ibraahiimm/portfolio-backend:${BUILD_NUMBER}</li>
-                        </ul>
-                    </body>
-                    </html>
-                """,
-                mimeType: 'text/html'
+            mail(
+                to:      'ibrahim.ibn.hi@gmail.com',
+                subject: "✅ [Jenkins] Build #${env.BUILD_NUMBER} — Succès",
+                body:    """
+                Bonjour,
+
+                Votre pipeline s'est terminé avec succès !
+
+                Job     : ${env.JOB_NAME}
+                Build   : #${env.BUILD_NUMBER}
+                Durée   : ${currentBuild.durationString}
+                Logs    : ${env.BUILD_URL}
+                """
             )
         }
         failure {
             echo '❌ Erreur dans le pipeline. Verifiez les logs ci-dessus.'
-            emailext (
-                to: "${EMAIL_DEST}",
-                subject: "❌ [Jenkins] Build #${BUILD_NUMBER} — ÉCHEC — ${JOB_NAME}",
-                body: """
-                    <html>
-                    <body style="font-family: Arial, sans-serif;">
-                        <h2 style="color: #dc3545;">❌ Déploiement échoué !</h2>
-                        <table border="1" cellpadding="8" style="border-collapse: collapse;">
-                            <tr><td><b>Job</b></td><td>${JOB_NAME}</td></tr>
-                            <tr><td><b>Build</b></td><td>#${BUILD_NUMBER}</td></tr>
-                            <tr><td><b>Statut</b></td><td style="color:red;"><b>ÉCHEC</b></td></tr>
-                            <tr><td><b>Durée</b></td><td>${currentBuild.durationString}</td></tr>
-                            <tr><td><b>Logs Jenkins</b></td><td><a href="${BUILD_URL}console">${BUILD_URL}console</a></td></tr>
-                        </table>
-                        <br>
-                        <p>Vérifiez les logs Jenkins pour identifier la cause de l'échec.</p>
-                    </body>
-                    </html>
-                """,
-                mimeType: 'text/html'
-            )
+                mail(
+                    to:      'ibrahim.ibn.hi@gmail.com',
+                    subject: "❌ [Jenkins] Build #${env.BUILD_NUMBER} — ÉCHEC",
+                    body:    """
+                    Bonjour,
+
+                    Votre pipeline s'est terminé avec échec !
+
+                    Job     : ${env.JOB_NAME}
+                    Build   : #${env.BUILD_NUMBER}
+                    Durée   : ${currentBuild.durationString}
+                    Logs    : ${env.BUILD_URL}
+                """
+)
         }
         always {
             echo 'Fin du pipeline.'
