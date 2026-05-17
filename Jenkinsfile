@@ -91,7 +91,7 @@ pipeline {
                 subject: "✅ [Jenkins] Build #${env.BUILD_NUMBER} — Succès",
                 body:    """
                 Bonjour,
-
+                Ibrahima, 
                 Votre pipeline s'est terminé avec succès !
 
                 Job     : ${env.JOB_NAME}
