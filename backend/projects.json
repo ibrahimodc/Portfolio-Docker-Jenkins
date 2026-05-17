@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "proj001",
+    "libelle": "Pipeline CI/CD GitLab",
+    "description": "Mise en place d'un pipeline CI/CD complet avec GitLab CI, intégrant SAST, scanning de conteneurs avec Trivy et déploiement automatisé sur Kubernetes.",
+    "technologies": [
+      "GitLab CI",
+      "Docker",
+      "Kubernetes",
+      "Trivy",
+      "Helm"
+    ],
+    "lien": "https://gitlab.com",
+    "imageUrl": "",
+    "createdAt": "2026-01-15T10:00:00.000Z"
+  },
+  {
+    "_id": "proj003",
+    "libelle": "Monitoring Prometheus / Grafana",
+    "description": "Stack de monitoring complète pour une application microservices : collecte de métriques Prometheus, alerting Alertmanager et dashboards Grafana temps réel.",
+    "technologies": [
+      "Prometheus",
+      "Grafana",
+      "Alertmanager",
+      "Docker Compose",
+      "Linux"
+    ],
+    "lien": "",
+    "imageUrl": "",
+    "createdAt": "2026-03-05T14:20:00.000Z"
+  }
+]
