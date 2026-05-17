@@ -9,12 +9,12 @@ export default defineConfig({
     proxy: {
       // Redirige /uploads/* vers le backend Express (images uploadées localement)
       '/uploads': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:3003',
         changeOrigin: true,
       },
       // Redirige /api/* vers le backend Express
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:3003',
         changeOrigin: true,
       },
     },

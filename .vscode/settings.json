@@ -5,7 +5,8 @@
   "editor.wordWrap": "on",
   "files.exclude": {
     "**/node_modules": true,
-    "**/build": true
+    "**/build": true,
+    ".claude": true
   },
   "javascript.updateImportsOnFileMove.enabled": "always",
   "terminal.integrated.defaultProfile.windows": "PowerShell",

@@ -3,7 +3,7 @@
  * Communique avec le backend Express (projects.json)
  */
 
-const API_BASE = 'http://localhost:3001/api';
+const API_BASE = '/api';
 
 // ── Helper fetch ──────────────────────────────────────────────────────────────
 async function request(url, options = {}) {
