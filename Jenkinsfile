@@ -63,7 +63,14 @@ pipeline {
                 }
             }
         }
-
+        stage(sonar: 'SonarQube Analysis') {
+            steps {
+                echo 'Analyse de code avec SonarQube...'
+                withSonarQubeEnv('sonarqube-server') {
+                    bat "sonar-scanner -Dsonar.projectKey=portfolio-backend -Dsonar.sources=backend/src -Dsonar.java.binaries=backend/target/classes"
+                }
+            }
+        }
         stage('Deploy') {
             steps {
                 echo 'Deploiement avec docker compose...'
