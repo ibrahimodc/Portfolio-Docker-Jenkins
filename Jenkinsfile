@@ -63,7 +63,7 @@ pipeline {
                 }
             }
         }
-        stage(sonar: 'SonarQube Analysis') {
+        stage('SonarQube Analysis') {
             steps {
                 echo 'Analyse de code avec SonarQube...'
                 withSonarQubeEnv('sonarqube-server') {
