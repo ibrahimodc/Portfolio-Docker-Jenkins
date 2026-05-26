@@ -105,9 +105,10 @@ pipeline {
         }
         success {
             echo '✅ Pipeline reussi.'
+            echo 'Ibrahima vous avez fait un super travail, continuez comme ça !'
             mail(
                 to: 'ibrahim.ibn.hi@gmail.com',
-                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                subject: "SUCCESS: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Logs: ${BUILD_URL}"
             )
         }
