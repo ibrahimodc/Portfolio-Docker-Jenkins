@@ -93,7 +93,7 @@ pipeline {
 
         stage('Health Check') {
             steps {
-                bat 'timeout /t 5 /nobreak'
+                bat 'ping -n 6 127.0.0.1 > nul'
                 bat 'docker ps'
             }
         }
