@@ -1,21 +1,21 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_PASS = credentials('dockerhub-credentials')
-        SONAR_TOKEN = credentials('sonarqube-token')
+    options {
+        timeout(time: 15, unit: 'MINUTES')  // ⬇️ réduit de 30 à 15 min
+        timestamps()
+        skipStagesAfterUnstable()           // ✅ saute les stages si unstable
     }
 
-    options {
-        timeout(time: 30, unit: 'MINUTES')
-        timestamps()
+    environment {
+        SONAR_TOKEN = credentials('sonarqube-token')
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Recuperation du code depuis GitHub...'
+                echo 'Recuperation du code...'
                 checkout scm
             }
         }
@@ -24,7 +24,6 @@ pipeline {
             parallel {
                 stage('Build Frontend') {
                     steps {
-                        echo 'Build image Docker Frontend...'
                         dir('frontend') {
                             bat "docker build -t ibraahiimm/portfolio-frontend:latest -t ibraahiimm/portfolio-frontend:${BUILD_NUMBER} ."
                         }
@@ -32,7 +31,6 @@ pipeline {
                 }
                 stage('Build Backend') {
                     steps {
-                        echo 'Build image Docker Backend...'
                         dir('backend') {
                             bat "docker build -t ibraahiimm/portfolio-backend:latest -t ibraahiimm/portfolio-backend:${BUILD_NUMBER} ."
                         }
@@ -41,50 +39,60 @@ pipeline {
             }
         }
 
-        stage('Push vers Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-credentials',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
-                    bat "docker push ibraahiimm/portfolio-frontend:latest"
-                    bat "docker push ibraahiimm/portfolio-frontend:${BUILD_NUMBER}"
-                    bat "docker push ibraahiimm/portfolio-backend:latest"
-                    bat "docker push ibraahiimm/portfolio-backend:${BUILD_NUMBER}"
-                    bat 'docker logout'
-                }
-            }
-        }
+        // ✅ Push Docker + SonarQube en parallèle
+        stage('Push & Analyse') {
+            parallel {
 
-        // ✅ STAGE CORRIGÉ ICI
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Analyse de code avec SonarQube...'
-                withSonarQubeEnv('sonarqube-server') {
-                    bat '''
-                        sonar-scanner ^
-                          -Dsonar.projectKey=portfolio ^
-                          -Dsonar.sources=. ^
-                          -Dsonar.host.url=http://host.docker.internal:9000 ^
-                          -Dsonar.token=%SONAR_TOKEN%
-                    '''
+                stage('Push Docker Hub') {
+                    steps {
+                        withCredentials([usernamePassword(
+                            credentialsId: 'dockerhub-credentials',
+                            usernameVariable: 'DOCKER_USER',
+                            passwordVariable: 'DOCKER_PASS'
+                        )]) {
+                            bat 'docker login -u %DOCKER_USER% -p %DOCKER_PASS%'
+                            bat "docker push ibraahiimm/portfolio-frontend:latest"
+                            bat "docker push ibraahiimm/portfolio-frontend:${BUILD_NUMBER}"
+                            bat "docker push ibraahiimm/portfolio-backend:latest"
+                            bat "docker push ibraahiimm/portfolio-backend:${BUILD_NUMBER}"
+                            bat 'docker logout'
+                        }
+                    }
+                }
+
+                stage('SonarQube Analysis') {
+                    steps {
+                        echo 'Analyse SonarQube...'
+                        withSonarQubeEnv('sonarqube-server') {
+                            bat '''
+                                sonar-scanner ^
+                                  -Dsonar.projectKey=portfolio ^
+                                  -Dsonar.sources=. ^
+                                  -Dsonar.host.url=http://host.docker.internal:9000 ^
+                                  -Dsonar.token=%SONAR_TOKEN% ^
+                                  -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
+                                  -Dsonar.scm.disabled=true
+                            '''
+                        }
+                        // ✅ Timeout court pour ne pas bloquer
+                        timeout(time: 2, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: false
+                        }
+                    }
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploiement en cours...'
+                echo 'Deploiement...'
                 bat 'docker compose up -d'
             }
         }
 
         stage('Health Check') {
             steps {
-                echo 'Verification de sante...'
-                bat 'timeout /t 10 /nobreak'
+                bat 'timeout /t 5 /nobreak'  // ⬇️ réduit de 10 à 5 secondes
                 bat 'docker ps'
             }
         }
@@ -95,19 +103,14 @@ pipeline {
             echo 'Fin du pipeline.'
         }
         success {
-            echo '✅ Pipeline reussi avec succes.'
-            mail(
-                to: 'ibrahim.ibn.hi.com',
-                subject: "Pipeline FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Verifiez les logs : ${BUILD_URL}"
-            )
+            echo '✅ Pipeline reussi.'
         }
         failure {
-            echo '❌ Erreur dans le pipeline. Verifiez les logs ci-dessus.'
+            echo '❌ Pipeline echoue.'
             mail(
-                to: 'ibrahim.ibn.hi.com',
-                subject: "Pipeline FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
-                body: "Verifiez les logs : ${BUILD_URL}"
+                to: 'ton-email@example.com',
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Logs: ${BUILD_URL}"
             )
         }
     }
