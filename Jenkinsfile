@@ -106,7 +106,7 @@ pipeline {
         success {
             echo '✅ Pipeline reussi.'
             mail(
-                to: 'ibrahim.ibn.hi.gmail.com',
+                to: 'ibrahim.ibn.hi@gmail.com',
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Logs: ${BUILD_URL}"
             )
@@ -114,7 +114,7 @@ pipeline {
         failure {
             echo '❌ Pipeline echoue.'
             mail(
-                to: 'ibrahim.ibn.hi.gmail.com',
+                to: 'ibrahim.ibn.hi@gmail.com',
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Logs: ${BUILD_URL}"
             )
