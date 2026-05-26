@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     options {
-        timeout(time: 15, unit: 'MINUTES')  // ⬇️ réduit de 30 à 15 min
+        timeout(time: 15, unit: 'MINUTES')
         timestamps()
-        skipStagesAfterUnstable()           // ✅ saute les stages si unstable
+        skipStagesAfterUnstable()
     }
 
     environment {
@@ -39,7 +39,6 @@ pipeline {
             }
         }
 
-        // ✅ Push Docker + SonarQube en parallèle
         stage('Push & Analyse') {
             parallel {
 
@@ -60,21 +59,24 @@ pipeline {
                     }
                 }
 
+                // ✅ STAGE CORRIGÉ
                 stage('SonarQube Analysis') {
                     steps {
                         echo 'Analyse SonarQube...'
                         withSonarQubeEnv('sonarqube-server') {
-                            bat '''
-                                sonar-scanner ^
-                                  -Dsonar.projectKey=portfolio ^
-                                  -Dsonar.sources=. ^
-                                  -Dsonar.host.url=http://host.docker.internal:9000 ^
-                                  -Dsonar.token=%SONAR_TOKEN% ^
-                                  -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
-                                  -Dsonar.scm.disabled=true
-                            '''
+                            script {
+                                def scannerHome = tool 'SonarScanner'
+                                bat """
+                                    "${scannerHome}\\bin\\sonar-scanner.bat" ^
+                                      -Dsonar.projectKey=portfolio ^
+                                      -Dsonar.sources=. ^
+                                      -Dsonar.host.url=http://host.docker.internal:9000 ^
+                                      -Dsonar.token=%SONAR_TOKEN% ^
+                                      -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
+                                      -Dsonar.scm.disabled=true
+                                """
+                            }
                         }
-                        // ✅ Timeout court pour ne pas bloquer
                         timeout(time: 2, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: false
                         }
@@ -92,7 +94,7 @@ pipeline {
 
         stage('Health Check') {
             steps {
-                bat 'timeout /t 5 /nobreak'  // ⬇️ réduit de 10 à 5 secondes
+                bat 'timeout /t 5 /nobreak'
                 bat 'docker ps'
             }
         }
@@ -104,11 +106,16 @@ pipeline {
         }
         success {
             echo '✅ Pipeline reussi.'
+            mail(
+                to: 'ibrahim.ibn.hi.com',
+                subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Logs: ${BUILD_URL}"
+            )
         }
         failure {
             echo '❌ Pipeline echoue.'
             mail(
-                to: 'ton-email@example.com',
+                to: 'ibrahim.ibn.hi.com',
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Logs: ${BUILD_URL}"
             )
