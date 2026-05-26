@@ -96,11 +96,16 @@ pipeline {
         }
         success {
             echo '✅ Pipeline reussi avec succes.'
+            mail(
+                to: 'ibrahim.ibn.hi.com',
+                subject: "Pipeline FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
+                body: "Verifiez les logs : ${BUILD_URL}"
+            )
         }
         failure {
             echo '❌ Erreur dans le pipeline. Verifiez les logs ci-dessus.'
             mail(
-                to: 'ton-email@example.com',
+                to: 'ibrahim.ibn.hi.com',
                 subject: "Pipeline FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
                 body: "Verifiez les logs : ${BUILD_URL}"
             )
