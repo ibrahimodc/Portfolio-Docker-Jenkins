@@ -70,7 +70,6 @@ pipeline {
                                     "${scannerHome}\\bin\\sonar-scanner.bat" ^
                                       -Dsonar.projectKey=portfolio ^
                                       -Dsonar.sources=. ^
-                                      -Dsonar.host.url=http://host.docker.internal:9000 ^
                                       -Dsonar.token=%SONAR_TOKEN% ^
                                       -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
                                       -Dsonar.scm.disabled=true
