@@ -167,7 +167,7 @@ pipeline {
         }
         failure {
             echo '❌ Pipeline echoue.'
-            echo 'Ibrahima vous avez fait un super travail, même si ça ne marche pas, Ne lâcher pas !'
+            echo 'Ibrahima vous avez fait un super travail, même si ça ne marche pas,Ne lâcher pas !'
             mail(
                 to: 'ibrahim.ibn.hi@gmail.com',
                 subject: "FAILED: ${JOB_NAME} #${BUILD_NUMBER}",
