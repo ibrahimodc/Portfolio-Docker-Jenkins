@@ -38,6 +38,59 @@ pipeline {
                 }
             }
         }
+                stage('Deploy Kubernetes') {
+            steps {
+                echo 'Deploiement sur Kubernetes...'
+
+                // Namespace
+                bat "kubectl apply -f k8s\\namespace.yml"
+
+                // Secrets MongoDB
+                bat "kubectl apply -f k8s\\secret.yml"
+
+                // MongoDB
+                bat "kubectl apply -f k8s\\mongodb-deployment.yml"
+                bat "kubectl apply -f k8s\\mongodb-service.yml"
+
+                // Attendre MongoDB
+                bat "kubectl rollout status deployment/mongodb -n %K8S_NAMESPACE% --timeout=120s"
+
+                // Backend
+                bat "kubectl apply -f k8s\\backend-deployment.yml"
+                bat "kubectl apply -f k8s\\backend-service.yml"
+
+                // Mettre à jour image backend
+                bat "kubectl set image deployment/backend backend=${BACKEND_IMAGE}:${BUILD_NUMBER} -n %K8S_NAMESPACE%"
+                bat "kubectl rollout status deployment/backend -n %K8S_NAMESPACE% --timeout=120s"
+
+                // Frontend
+                bat "kubectl apply -f k8s\\frontend-deployment.yml"
+                bat "kubectl apply -f k8s\\frontend-service.yml"
+
+                // Mettre à jour image frontend
+                bat "kubectl set image deployment/frontend frontend=${FRONTEND_IMAGE}:${BUILD_NUMBER} -n %K8S_NAMESPACE%"
+                bat "kubectl rollout status deployment/frontend -n %K8S_NAMESPACE% --timeout=120s"
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo 'Verification du deploiement Kubernetes...'
+
+                // Attendre que tout soit prêt
+                bat 'ping localhost -n 16 > nul'
+
+                // Voir les pods
+                bat "kubectl get pods -n %K8S_NAMESPACE%"
+
+                // Voir les services
+                bat "kubectl get services -n %K8S_NAMESPACE%"
+
+                // Voir les deployments
+                bat "kubectl get deployments -n %K8S_NAMESPACE%"
+            }
+        }
+    }
 
         stage('Push & Analyse') {
             parallel {
@@ -68,11 +121,11 @@ pipeline {
                                 def scannerHome = tool 'SonarScanner'
                                 bat """
                                     "${scannerHome}\\bin\\sonar-scanner.bat" ^
-                                      -Dsonar.projectKey=portfolio ^
-                                      -Dsonar.sources=. ^
-                                      -Dsonar.token=%SONAR_TOKEN% ^
-                                      -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
-                                      -Dsonar.scm.disabled=true
+                                    -Dsonar.projectKey=portfolio ^
+                                    -Dsonar.sources=. ^
+                                    -Dsonar.token=%SONAR_TOKEN% ^
+                                    -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/build/**,**/.git/** ^
+                                    -Dsonar.scm.disabled=true
                                 """
                             }
                         }
