@@ -5,6 +5,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 const path = require("path");
 
 const connectDB = require("./config/connectdb");
@@ -17,8 +18,10 @@ const PORT = process.env.PORT || 3003;
 app.use(cors());
 app.use(express.json());
 
-// Servir le frontend statique
-app.use(express.static(path.join(__dirname, "../frontend")));
+const frontendPath = path.join(__dirname, "../frontend");
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+}
 
 // Logger
 app.use((req, _res, next) => {
@@ -31,10 +34,12 @@ app.use((req, _res, next) => {
 // Santé de l'API et routes
 app.use("/api", projetRoutes);
 
-// SPA fallback
-app.get("*", (_req, res) =>
-  res.sendFile(path.join(__dirname, "../frontend/index.html")),
-);
+// SPA fallback uniquement si le frontend est disponible
+if (fs.existsSync(path.join(frontendPath, "index.html"))) {
+  app.get("*", (_req, res) =>
+    res.sendFile(path.join(frontendPath, "index.html")),
+  );
+}
 
 // ── Démarrage ─────────────────────────────────────────────────────────────────
 connectDB().then(() => {
