@@ -1,17 +1,19 @@
-# Stage 1 : Build React/Vite
-FROM node:20-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+# ============================================
+# Portfolio Backend — Express.js + Node.js
+# ============================================
+FROM node:20-alpine
 
-# Stage 2 : Servir avec Nginx
-FROM nginx:1.27-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY --from=build /app/index.html /usr/share/nginx/html/index.html
-COPY --from=build /app/api.js /usr/share/nginx/html/api.js
-COPY --from=build /app/assets /usr/share/nginx/html/assets
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+# Installer les dépendances de production uniquement
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copier le code source
+COPY . .
+
+# Port exposé par Express.js
+EXPOSE 3000
+
+# Démarrer le serveur
+CMD ["node", "server.js"]
