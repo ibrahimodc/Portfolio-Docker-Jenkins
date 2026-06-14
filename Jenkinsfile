@@ -100,7 +100,6 @@ pipeline {
                 // MongoDB
                 bat 'kubectl apply -f K8s\\mongodb\\deployment.yml'
                 bat 'kubectl apply -f K8s\\mongodb\\service.yml'
-
                 // Attendre MongoDB
                 bat 'kubectl rollout status deployment/mongodb -n %K8S_NAMESPACE% --timeout=120s'
 
