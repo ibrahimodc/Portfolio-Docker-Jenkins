@@ -1,15 +1,31 @@
 {
+  // ── Éditeur général ──
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.wordWrap": "on",
+
+  // ── Fichiers à cacher ──
   "files.exclude": {
     "**/node_modules": true,
     "**/build": true,
     ".claude": true
   },
-  "javascript.updateImportsOnFileMove.enabled": "always",
+
+  // ── JavaScript ──
+ "js/ts.updateImportsOnFileMove.enabled": "always",
+  // ── Terminal ──
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",
-  "git.ignoreLimitWarning": true
+
+  // ── Git ──
+  "git.ignoreLimitWarning": true,
+
+  // ── Terraform ──
+  "[terraform]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
+  "terraform.validation.enableEnhancedValidation": true,
+  "terraform.languageServer.enable": true
 }

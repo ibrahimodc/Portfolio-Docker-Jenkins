@@ -1,4 +1,4 @@
-region        = "eu-west-3"
+region        = "eu-west-1"
 instance_type = "t3.micro"
-ami           = "ami-0c55b159cbfafe1f0"
 env           = "dev"
+# ami         = "..."   ← plus besoin, AMI trouvée automatiquement

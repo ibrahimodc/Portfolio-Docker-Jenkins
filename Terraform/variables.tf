@@ -9,12 +9,6 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
-
-variable "ami" {
-  description = "AMI de l'instance EC2"
-  type        = string
-}
-
 variable "env" {
   description = "Environnement"
   type        = string
