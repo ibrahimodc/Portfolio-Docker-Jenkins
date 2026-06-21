@@ -1,0 +1,99 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Stack Monitoring — Prometheus + Grafana
+#  Portfolio Ibrahima Diallo — USAGE LOCAL (Windows / Docker Desktop)
+#
+#  Lancer (PowerShell, depuis le dossier Monitoring) :
+#    docker compose -f docker-compose.monitoring.yml up -d
+#
+#  Arreter :
+#    docker compose -f docker-compose.monitoring.yml down
+#
+#  Acces :
+#    Prometheus : http://localhost:9090
+#    Grafana    : http://localhost:3030   (login: admin / admin au premier lancement)
+#
+#  IMPORTANT :
+#    Ce fichier est INDEPENDANT du docker-compose.yml principal du portfolio.
+#    Il se connecte au meme reseau Docker (cree par Docker Desktop) pour pouvoir
+#    "voir" les conteneurs frontend/backend/mongo et afficher leurs metriques
+#    (CPU, RAM, reseau...).
+#
+#  PREREQUIS : le portfolio principal doit deja tourner
+#    (docker compose up -d depuis le dossier racine du projet)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+services:
+
+  # ── 1. Prometheus — collecte et stocke les metriques ──────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: monitoring-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=15d"
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+      - portfolio_default
+
+  # ── 2. cAdvisor — expose les metriques de TOUS les conteneurs Docker ──────
+  #    Fonctionne via WSL2 (noyau Linux reel) sous Docker Desktop.
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: monitoring-cadvisor
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8081:8080"
+    networks:
+      - monitoring
+
+  # ── 3. Grafana — visualisation des metriques (dashboards) ─────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: monitoring-grafana
+    restart: unless-stopped
+    ports:
+      - "3030:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+# ── Volumes persistants ─────────────────────────────────────────────────────
+volumes:
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ── Reseaux ──────────────────────────────────────────────────────────────────
+networks:
+  monitoring:
+    driver: bridge
+  # Reseau cree automatiquement par le docker-compose.yml principal du portfolio
+  # quand tu lances "docker compose up" depuis le dossier racine du projet.
+  # Nom genere par Docker Compose = "<nom_dossier_en_minuscules>_default"
+  # Si ton dossier s'appelle "Portfolio-Docker-Jenkins" -> reseau "portfolio-docker-jenkins_default"
+  # VERIFIE le nom exact avec : docker network ls
+  portfolio_default:
+    external: true
+    name: portfolio-docker-jenkins_default

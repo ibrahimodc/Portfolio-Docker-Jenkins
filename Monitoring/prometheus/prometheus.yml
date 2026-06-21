@@ -1,0 +1,21 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Prometheus — Configuration
+#  Definit QUOI surveiller et A QUELLE FREQUENCE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+global:
+  scrape_interval: 15s       # Frequence de collecte des metriques
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  # ── Prometheus se surveille lui-meme ──────────────────────────────────────
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # ── cAdvisor : metriques de TOUS les conteneurs Docker ────────────────────
+  #    (CPU, RAM, reseau, disque par conteneur : frontend, backend, mongo...)
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]

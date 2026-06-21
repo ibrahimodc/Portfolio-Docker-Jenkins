@@ -1,0 +1,15 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Grafana — Datasource (provisioning automatique)
+#  Connecte automatiquement Grafana a Prometheus au demarrage,
+#  sans configuration manuelle dans l'interface.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
