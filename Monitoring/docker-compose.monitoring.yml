@@ -89,11 +89,6 @@ volumes:
 networks:
   monitoring:
     driver: bridge
-  # Reseau cree automatiquement par le docker-compose.yml principal du portfolio
-  # quand tu lances "docker compose up" depuis le dossier racine du projet.
-  # Nom genere par Docker Compose = "<nom_dossier_en_minuscules>_default"
-  # Si ton dossier s'appelle "Portfolio-Docker-Jenkins" -> reseau "portfolio-docker-jenkins_default"
-  # VERIFIE le nom exact avec : docker network ls
   portfolio_default:
     external: true
-    name: portfolio-docker-jenkins_default
+    name: jenkins-portfolio_default
